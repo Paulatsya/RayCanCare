@@ -2,6 +2,61 @@ import React, { createContext, useContext, useState, ReactNode } from "react";
 
 type Role = "patient" | "caregiver" | "survivor";
 
+interface LungCancerDetails {
+    diagnosisDate: Date;
+    stage: string;
+    lungCancerType: string;
+    mutations: string[];
+}
+
+// Optional: Strongly typed details for specific treatments
+interface ChemotherapyDetails {
+    startDate?: string;
+    frequency?: string;
+    nextSession?: string;
+    sideEffects?: string[];
+}
+
+interface RadiationDetails {
+    bodyArea?: string;
+    numberOfSessions?: number;
+    sideEffects?: string[];
+}
+
+interface SurgeryDetails {
+    surgeryType?: string;
+    date?: string;
+    recoveryNotes?: string;
+}
+
+interface ImmunoTargetedDetails {
+    drugName?: string;
+    symptoms?: string[];
+    schedule?: string;
+}
+
+interface TreatmentDetails {
+    treatments?: string[]; // List of selected treatment names
+    started?: boolean;
+    details?: {
+        Chemotherapy?: ChemotherapyDetails;
+        RadiationTherapy?: RadiationDetails;
+        Surgery?: SurgeryDetails;
+        Immunotherapy?: ImmunoTargetedDetails;
+        TargetedTherapy?: ImmunoTargetedDetails;
+        ClinicalTrial?: any;
+        PalliativeCare?: any;
+        "Don’t Know Yet"?: any;
+    };
+}
+
+interface SupportiveDetails {
+    respiratorySymptoms?: string[];
+    breathingAid?: boolean;
+    breathingExercise?: boolean;
+    oxygenSupport?: boolean;
+}
+
 interface UserInfo {
     role?: Role;
 
@@ -13,14 +68,11 @@ interface UserInfo {
     location?: string;
     language?: string;
 
-    hasAllergies?: boolean;
-    allergyDetails?: string;
-    medicationDetails?: string;
-    onMedication?: boolean;
     healthConditions?: string[];
-    allergies?: string;
-
-
+    onMedication?: boolean | null;
+    medicationDetails?: string;
+    hasAllergies?: boolean | null;
+    allergyDetails?: string;
 
     smokingStatus?: string;
     alcoholConsumption?: string;
@@ -30,10 +82,13 @@ interface UserInfo {
     hasDietaryRestrictions?: string;
     dob?: string;
 
+    cancerType?: string;
 
+    lungCancerDetails?: LungCancerDetails;
 
+    treatmentPlan?: TreatmentDetails;
 
-    // Add more fields as needed
+    supportiveDetails?: SupportiveDetails;
 }
 
 interface UserContextType {

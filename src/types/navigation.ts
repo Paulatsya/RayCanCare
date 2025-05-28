@@ -5,7 +5,11 @@ export type RootStackParamList = {
     HealthHistory: undefined;
     Lifestyle: undefined;
     SleepDiet: undefined;
-    InfoCollected: undefined; // ← Add this
+    InfoCollected: undefined;
+    CancerTypeSelection: undefined;
+    LungCancerDetails: undefined;
+    TreatmentPlan: undefined;
+    TreatmentDetails: undefined
+    SupportiveDetails: undefined;
+    ConsentSummary: undefined;// ← New screen added
 };
-
-

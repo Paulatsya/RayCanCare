@@ -35,7 +35,7 @@ const InfoCollectedScreen: React.FC = ({ navigation }: any) => {
 
             <TouchableOpacity
                 style={[styles.button, { backgroundColor: colors.primary }]}
-                onPress={() => navigation.navigate('RoleSelection')} // ← replace with actual next screen
+                onPress={() => navigation.navigate('CancerTypeSelection')} // ← replace with actual next screen
             >
                 <Text style={{ color: colors.surface, fontFamily: font.regular }}>
                     Continue

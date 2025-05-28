@@ -41,48 +41,57 @@ const LifestyleScreen: React.FC = ({ navigation }: any) => {
             <Text style={[styles.subtitle, { color: colors.textPrimary }]}>
                 Do you smoke?
             </Text>
-            <Picker
-                selectedValue={smoking}
-                style={[styles.input, { borderColor: colors.primary, color: colors.textPrimary }]}
-                onValueChange={setSmoking}
-            >
-                <Picker.Item label="Select one" value="" />
-                <Picker.Item label="Rarely" value="Rarely" />
-                <Picker.Item label="Never" value="Never" />
-                <Picker.Item label="Regularly" value="Regularly" />
-            </Picker>
+            <View style={[styles.pickerWrapper, { borderColor: colors.primary }]}>
+                <Picker
+                    selectedValue={smoking}
+                    style={{ color: colors.textPrimary }}
+                    onValueChange={setSmoking}
+                >
+                    <Picker.Item label="Select one" value="" />
+                    <Picker.Item label="Rarely" value="Rarely" />
+                    <Picker.Item label="Never" value="Never" />
+                    <Picker.Item label="Regularly" value="Regularly" />
+                </Picker>
+            </View>
+
 
 
             {/* Alcohol Dropdown */}
             <Text style={[styles.subtitle, { color: colors.textPrimary }]}>
                 Do you consume Alcohol?
             </Text>
-            <Picker
-                selectedValue={alcohol}
-                style={[styles.input, { borderColor: colors.primary, color: colors.textPrimary }]}
-                onValueChange={setAlcohol}
-            >
-                <Picker.Item label="Select one" value="" />
-                <Picker.Item label="Rarely" value="Rarely" />
-                <Picker.Item label="Never" value="Never" />
-                <Picker.Item label="Regularly" value="Regularly" />
-            </Picker>
+            <View style={[styles.pickerWrapper, { borderColor: colors.primary }]}>
+                <Picker
+                    selectedValue={alcohol}
+                    style={{ color: colors.textPrimary }}
+                    onValueChange={setAlcohol}
+                >
+                    <Picker.Item label="Select one" value="" />
+                    <Picker.Item label="Rarely" value="Rarely" />
+                    <Picker.Item label="Never" value="Never" />
+                    <Picker.Item label="Regularly" value="Regularly" />
+                </Picker>
+            </View>
+
 
 
             {/* Physical Activity Dropdown */}
             <Text style={[styles.subtitle, { color: colors.textPrimary }]}>
                 What is your physical activity level?
             </Text>
-            <Picker
-                selectedValue={activityLevel}
-                style={[styles.input, { borderColor: colors.primary, color: colors.textPrimary }]}
-                onValueChange={setActivityLevel}
-            >
-                <Picker.Item label="Select one" value="" />
-                <Picker.Item label="Low" value="Low" />
-                <Picker.Item label="Moderate" value="Moderate" />
-                <Picker.Item label="High" value="High" />
-            </Picker>
+            <View style={[styles.pickerWrapper, { borderColor: colors.primary }]}>
+                <Picker
+                    selectedValue={activityLevel}
+                    style={{ color: colors.textPrimary }}
+                    onValueChange={setActivityLevel}
+                >
+                    <Picker.Item label="Select one" value="" />
+                    <Picker.Item label="Low" value="Low" />
+                    <Picker.Item label="Moderate" value="Moderate" />
+                    <Picker.Item label="High" value="High" />
+                </Picker>
+            </View>
+
 
             {/* Next Button */}
             <TouchableOpacity
@@ -91,7 +100,7 @@ const LifestyleScreen: React.FC = ({ navigation }: any) => {
             >
                 <Text style={{ color: colors.surface, fontFamily: font.regular }}>Next</Text>
             </TouchableOpacity>
-        </View>
+        </View >
     );
 };
 
@@ -124,6 +133,12 @@ const styles = StyleSheet.create({
         alignSelf: 'center',
         borderRadius: 10,
         alignItems: 'center',
+    },
+    pickerWrapper: {
+        borderWidth: 1,
+        borderRadius: 10,
+        marginBottom: 10,
+        paddingHorizontal: 10,
     },
 });
 

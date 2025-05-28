@@ -21,7 +21,7 @@ const SleepDietScreen: React.FC = ({ navigation }: any) => {
             sleepHours,
             dietaryRestrictions: hasDietaryRestrictions ? dietaryRestrictions : '', // Save the dietary restrictions if yes
         }));
-        console.log('User Info:', userInfo);
+        // console.log('User Info:', userInfo);
         navigation.navigate('InfoCollected');
     };
 

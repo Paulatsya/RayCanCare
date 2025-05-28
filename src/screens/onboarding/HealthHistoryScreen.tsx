@@ -24,12 +24,6 @@ const HealthHistoryScreen: React.FC = ({ navigation }: any) => {
     const [hasAllergies, setHasAllergies] = useState<boolean | null>(userInfo?.hasAllergies ?? null);
     const [allergyDetails, setAllergyDetails] = useState(userInfo?.allergyDetails || '');
 
-
-
-    const handleToggleRadio = (current: boolean | null, setter: (val: boolean | null) => void) => {
-        setter(current === true ? null : true);
-    };
-
     const handleToggleCondition = (condition: string) => {
         setHealthConditions(prev => {
             if (condition === 'None') {
@@ -43,44 +37,37 @@ const HealthHistoryScreen: React.FC = ({ navigation }: any) => {
         });
     };
 
-
     const handleNext = () => {
         let updatedConditions = [...healthConditions];
-
         if (updatedConditions.includes('Other')) {
             if (otherCondition.trim()) {
                 updatedConditions = updatedConditions
                     .filter(cond => cond !== 'Other')
                     .concat(otherCondition.trim());
-            } else {
-                // If "Other" selected but no input, keep "Other"
-                updatedConditions = updatedConditions;
             }
         }
-        // console.log('updatedConditions:', updatedConditions);
+
         setUserInfo(prev => ({
             ...prev,
             healthConditions: updatedConditions,
-            allergyDetails: hasAllergies ? allergyDetails : '',
             onMedication,
             medicationDetails: onMedication ? medicationDetails : '',
+            hasAllergies,
+            allergyDetails: hasAllergies ? allergyDetails : '',
         }));
-
 
         navigation.navigate('Lifestyle' as never);
     };
 
-
-
     return (
         <ScrollView contentContainerStyle={[styles.container, { backgroundColor: colors.background }]}>
-            <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', marginBottom: 30, marginTop: 40 }}>
-                <Text style={[styles.title, { color: colors.textPrimary, fontFamily: font.bold, marginTop: 5 }]}>
+            <View style={styles.header}>
+                <Text style={[styles.title, { color: colors.textPrimary, fontFamily: font.bold }]}>
                     Your Health History!
                 </Text>
                 <Image
                     source={require('../../assets/RaySmileNoBG.png')}
-                    style={{ width: 50, height: 50, marginLeft: 10, borderRadius: 16 }}
+                    style={styles.avatar}
                 />
             </View>
 
@@ -95,11 +82,15 @@ const HealthHistoryScreen: React.FC = ({ navigation }: any) => {
                         key={condition}
                         style={[
                             styles.chip,
-                            healthConditions.includes(condition) && styles.chipSelected,
+                            {
+                                backgroundColor: healthConditions.includes(condition)
+                                    ? colors.primary
+                                    : colors.chipBackground,
+                            },
                         ]}
                         onPress={() => handleToggleCondition(condition)}
                     >
-                        <Text style={styles.chipText}>{condition}</Text>
+                        <Text style={{ color: colors.textPrimary }}>{condition}</Text>
                     </TouchableOpacity>
                 ))}
             </View>
@@ -114,7 +105,7 @@ const HealthHistoryScreen: React.FC = ({ navigation }: any) => {
                 />
             )}
 
-            {/* Medication Question */}
+            {/* Medication */}
             <Text style={[styles.subtitle, { color: colors.textPrimary }]}>
                 Are you currently taking any medication?
             </Text>
@@ -122,18 +113,24 @@ const HealthHistoryScreen: React.FC = ({ navigation }: any) => {
                 <TouchableOpacity
                     style={[
                         styles.booleanButton,
-                        onMedication === true && styles.selectedButton,
+                        {
+                            backgroundColor: onMedication === true ? colors.primary : colors.surface,
+                            borderColor: colors.primary,
+                        },
                     ]}
-                    onPress={() => setOnMedication(onMedication === true ? null : true)}
+                    onPress={() => setOnMedication(true)}
                 >
                     <Text style={{ color: colors.textPrimary }}>Yes</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
                     style={[
                         styles.booleanButton,
-                        onMedication === false && styles.selectedButton,
+                        {
+                            backgroundColor: onMedication === false ? colors.primary : colors.surface,
+                            borderColor: colors.primary,
+                        },
                     ]}
-                    onPress={() => setOnMedication(onMedication === false ? null : false)}
+                    onPress={() => setOnMedication(false)}
                 >
                     <Text style={{ color: colors.textPrimary }}>No</Text>
                 </TouchableOpacity>
@@ -149,7 +146,7 @@ const HealthHistoryScreen: React.FC = ({ navigation }: any) => {
                 />
             )}
 
-            {/* Allergy Question */}
+            {/* Allergies */}
             <Text style={[styles.subtitle, { color: colors.textPrimary }]}>
                 Do you have any allergies?
             </Text>
@@ -157,18 +154,24 @@ const HealthHistoryScreen: React.FC = ({ navigation }: any) => {
                 <TouchableOpacity
                     style={[
                         styles.booleanButton,
-                        hasAllergies === true && styles.selectedButton,
+                        {
+                            backgroundColor: hasAllergies === true ? colors.primary : colors.surface,
+                            borderColor: colors.primary,
+                        },
                     ]}
-                    onPress={() => setHasAllergies(hasAllergies === true ? null : true)}
+                    onPress={() => setHasAllergies(true)}
                 >
                     <Text style={{ color: colors.textPrimary }}>Yes</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
                     style={[
                         styles.booleanButton,
-                        hasAllergies === false && styles.selectedButton,
+                        {
+                            backgroundColor: hasAllergies === false ? colors.primary : colors.surface,
+                            borderColor: colors.primary,
+                        },
                     ]}
-                    onPress={() => setHasAllergies(hasAllergies === false ? null : false)}
+                    onPress={() => setHasAllergies(false)}
                 >
                     <Text style={{ color: colors.textPrimary }}>No</Text>
                 </TouchableOpacity>
@@ -200,9 +203,23 @@ const styles = StyleSheet.create({
         paddingBottom: 60,
         flexGrow: 1,
     },
+    header: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center',
+        marginBottom: 30,
+        marginTop: 40,
+    },
     title: {
         fontSize: 22,
         textAlign: 'center',
+        marginTop: 5,
+    },
+    avatar: {
+        width: 50,
+        height: 50,
+        marginLeft: 10,
+        borderRadius: 16,
     },
     subtitle: {
         fontSize: 16,
@@ -226,13 +243,6 @@ const styles = StyleSheet.create({
         paddingHorizontal: 16,
         margin: 5,
         borderRadius: 20,
-        backgroundColor: '#e0e0e0',
-    },
-    chipText: {
-        color: '#000',
-    },
-    chipSelected: {
-        backgroundColor: '#6200ee',
     },
     button: {
         marginTop: 30,
@@ -252,9 +262,6 @@ const styles = StyleSheet.create({
         paddingHorizontal: 25,
         borderWidth: 1,
         borderRadius: 8,
-    },
-    selectedButton: {
-        backgroundColor: '#ADD8E6',
     },
 });
 
