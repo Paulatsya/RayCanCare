@@ -1,118 +1,75 @@
-import React, { useState } from "react";
-import { View, Text, StyleSheet, TouchableOpacity, Image } from "react-native";
-import { Checkbox } from "react-native-paper";
-import * as Animatable from "react-native-animatable";
-import { lightTheme } from "../../../constants/theme"; // Adjust the path if necessary
+// ConsentSummaryScreen.tsx
+import React from 'react';
+import { View, Text, StyleSheet, TouchableOpacity, Alert } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { getAuth } from 'firebase/auth';
+import { saveUserData } from '../../../services/firestorefunctions';
+import { useUser } from '../../../context/UserContext';
 
-// Import your ray image (adjust the relative path as needed)
-const rayImage = require("../../../assets/RayConsent.png");
+export default function ConsentSummaryScreen() {
+  const navigation = useNavigation<any>();
+  const { userInfo } = useUser();
 
-const ConsentScreen = ({ navigation }: any) => {
-    const [consent, setConsent] = useState(false);
-    const theme = lightTheme;
+  const handleContinue = async () => {
+    try {
+      const auth = getAuth();
+      const user = auth.currentUser;
 
-    return (
-        <View style={[styles.container, { backgroundColor: theme.colors.background }]}>
-            <Animatable.Image
-                source={rayImage}
-                style={styles.rayImage}
-                animation="pulse"
-                iterationCount="infinite"
-                easing="ease-in-out"
-                duration={2000}
-            />
+      if (!user) {
+        Alert.alert('User not authenticated');
+        return;
+      }
 
-            <Text style={[styles.title, { color: theme.colors.textPrimary, fontFamily: theme.font.bold }]}>
-                We need your consent!
-            </Text>
+      await saveUserData(user.uid, userInfo);
+      await AsyncStorage.setItem('@hasOnboarded', 'true');
 
-            {/* <Text style={[styles.subtitle, { color: theme.colors.surface, fontFamily: theme.font.regular }]}>
-                Please provide your consent to personalize your care experience.
-            </Text> */}
+      navigation.replace('ReadyToTalk');
+    } catch (err) {
+      console.error('Failed to save user data:', err);
+      Alert.alert('Error', 'Failed to save your information.');
+    }
+  };
 
-            <Text style={[styles.dataUseText, { color: theme.colors.surface, fontFamily: theme.font.regular }]}>
-                Your data is used only within this app to personalize your experience and will never be shared externally.
-            </Text>
-
-            <View style={styles.checkboxContainer}>
-                <Checkbox
-                    status={consent ? "checked" : "unchecked"}
-                    onPress={() => setConsent(!consent)}
-                    color={theme.colors.primary}
-                />
-                <Text style={[styles.checkboxLabel, { color: theme.colors.textPrimary, fontFamily: theme.font.regular }]}>
-                    I consent to the use of my data for personalization.
-                </Text>
-            </View>
-
-            <Animatable.View animation="fadeInUp" duration={600} delay={100}>
-                <TouchableOpacity
-                    style={[
-                        styles.button,
-                        {
-                            backgroundColor: consent ? theme.colors.primary : theme.colors.disabled,
-                        },
-                    ]}
-                    onPress={() => {
-                        if (consent) navigation.navigate("ReadyToTalk");
-                    }}
-                    disabled={!consent}
-                >
-                    <Text style={[styles.buttonText, { fontFamily: theme.font.bold }]}>Continue</Text>
-                </TouchableOpacity>
-            </Animatable.View>
-        </View>
-    );
-};
-
-export default ConsentScreen;
+  return (
+    <View style={styles.container}>
+      <Text style={styles.title}>You're all set!</Text>
+      <Text style={styles.subtitle}>Tap below to start chatting with Ray.</Text>
+      <TouchableOpacity style={styles.button} onPress={handleContinue}>
+        <Text style={styles.buttonText}>Talk to Ray</Text>
+      </TouchableOpacity>
+    </View>
+  );
+}
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        padding: 24,
-        justifyContent: "center",
-        alignItems: "center", // center horizontally for image and text
-    },
-    rayImage: {
-        width: 200,
-        height: 200,
-        marginBottom: 20,
-    },
-    title: {
-        fontSize: 24,
-        textAlign: "center",
-        marginBottom: 12,
-    },
-    subtitle: {
-        fontSize: 16,
-        textAlign: "center",
-        marginBottom: 12,
-    },
-    dataUseText: {
-        fontSize: 14,
-        textAlign: "center",
-        marginBottom: 32,
-        fontStyle: "italic",
-        opacity: 0.8,
-    },
-    checkboxContainer: {
-        flexDirection: "row",
-        alignItems: "center",
-        marginBottom: 40,
-    },
-    checkboxLabel: {
-        marginLeft: 10,
-        fontSize: 16,
-        flexShrink: 1,
-    },
-    button: {
-        padding: 14,
-        borderRadius: 10,
-        alignItems: "center",
-    },
-    buttonText: {
-        color: "#fff",
-        fontSize: 16,
-    },
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingHorizontal: 20,
+    backgroundColor: '#1C1C2E',
+  },
+  title: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: 'white',
+    marginBottom: 10,
+  },
+  subtitle: {
+    fontSize: 16,
+    color: '#ccc',
+    marginBottom: 20,
+  },
+  button: {
+    backgroundColor: '#FF9BB3',
+    paddingVertical: 12,
+    paddingHorizontal: 30,
+    borderRadius: 25,
+  },
+  buttonText: {
+    color: '#fff',
+    fontWeight: '600',
+    fontSize: 16,
+  },
 });

@@ -1,7 +1,8 @@
-import { doc, setDoc } from 'firebase/firestore';
+import { doc, setDoc , getDoc} from 'firebase/firestore';
 import { db } from './firebaseconfig';  // Your firestore initialization file
+import { getAuth } from 'firebase/auth';
 
-const saveUserData = async (userId: string, data: any) => {
+export const saveUserData = async (userId: string, data: any) => {
     try {
         const userRef = doc(db, 'users', userId);
         await setDoc(userRef, data);
@@ -14,3 +15,20 @@ const saveUserData = async (userId: string, data: any) => {
         }
     }
 };
+
+export const getPatientData = async () => {
+  const auth = getAuth();
+  const user = auth.currentUser;
+
+  if (!user) throw new Error("User not authenticated");
+
+  const docRef = doc(db, "users", user.uid);
+  const docSnap = await getDoc(docRef);
+
+  if (docSnap.exists()) {
+    return docSnap.data(); // Example: { name, age, gender, condition }
+  } else {
+    throw new Error("No patient data found");
+  }
+};
+

@@ -1,92 +1,64 @@
-import React from "react";
-import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
-import * as Animatable from "react-native-animatable";
-import { lightTheme } from "../../../constants/theme";
-import { useUser } from '../../../context/UserContext'; // Adjust the path if needed
+import React from 'react';
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useColorScheme } from 'react-native';
+import { lightTheme, darkTheme } from '../../../constants/theme';
 
-const raySaluting = require("../../../assets/RaySalute.png");
+export default function ReadyToTalkScreen() {
+  const navigation = useNavigation<any>();
+  const scheme = useColorScheme();
+  const theme = scheme === 'dark' ? darkTheme : lightTheme;
 
-const ReadyToTalkScreen = ({ navigation }: any) => {
-    const theme = lightTheme;
-    const { userInfo, setUserInfo } = useUser();
-    console.log('User Info:', userInfo);
+  const handleFinish = async () => {
+    try {
+      await AsyncStorage.setItem('@hasOnboarded', 'true');
+      navigation.replace('Chatbot'); // ✅ Go to chatbot
+    } catch (error) {
+      console.error('Failed to save onboarding status:', error);
+    }
+  };
 
-    return (
-
-        <View style={[styles.container, { backgroundColor: theme.colors.background }]}>
-            <Animatable.Image
-                source={raySaluting}
-                style={styles.rayImage}
-                animation="fadeIn"
-                // iterationCount="infinite"
-                easing="ease-in-out"
-                duration={2000}
-            />
-            <Text style={[styles.title, { color: theme.colors.textPrimary, fontFamily: theme.font.bold }]}>
-                Ray is ready to talk!
-            </Text>
-            <Text style={[styles.message, { color: theme.colors.surface, fontFamily: theme.font.regular }]}>
-                It was nice knowing you. {"\n"}
-                I’m ready to chat whenever you are!
-            </Text>
-            {/* console.log('User Info:', userInfo); */}
-            <TouchableOpacity
-                style={[styles.button, { backgroundColor: theme.colors.primary }]}
-                onPress={() => navigation.navigate("ChatScreen")}
-            >
-                <Text style={[styles.buttonText, { fontFamily: theme.font.bold }]}>Talk to Ray</Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity
-                style={[styles.button, { backgroundColor: theme.colors.secondary, marginTop: 12 }]}
-                onPress={() => navigation.navigate("HomeScreen")}
-            >
-                <Text style={[styles.buttonText, { fontFamily: theme.font.bold, color: theme.colors.textPrimary }]}>
-                    Go to My Home Screen
-                </Text>
-            </TouchableOpacity>
-        </View>
-    );
-
-
-};
-
-export default ReadyToTalkScreen;
+  return (
+    <View style={[styles.container, { backgroundColor: theme.colors.background }]}>
+      <Text style={[styles.title, { color: theme.colors.textPrimary }]}>You're all set!</Text>
+      <Text style={[styles.subtitle, { color: theme.colors.textSecondary }]}>
+        Tap below to start chatting with Ray.
+      </Text>
+      <TouchableOpacity
+        style={[styles.button, { backgroundColor: theme.colors.secondary }]}
+        onPress={handleFinish}
+      >
+        <Text style={[styles.buttonText, { color: theme.colors.textPrimary }]}>Talk to Ray</Text>
+      </TouchableOpacity>
+    </View>
+  );
+}
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        padding: 24,
-        justifyContent: "center",
-        alignItems: "center",
-    },
-    rayImage: {
-        width: 230,
-        height: 230,
-        marginBottom: 24,
-    },
-    title: {
-        fontSize: 28,
-        textAlign: "center",
-        marginBottom: 12,
-    },
-    message: {
-        fontSize: 16,
-        textAlign: "center",
-        lineHeight: 22,
-        fontStyle: "italic",
-        opacity: 0.8,
-        marginBottom: 32,
-    },
-    button: {
-        paddingVertical: 14,
-        paddingHorizontal: 36,
-        borderRadius: 10,
-        alignItems: "center",
-        width: "80%",
-    },
-    buttonText: {
-        fontSize: 16,
-        color: "#fff",
-    },
+  container: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingHorizontal: 20,
+  },
+  title: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    marginBottom: 12,
+  },
+  subtitle: {
+    fontSize: 16,
+    textAlign: 'center',
+    marginBottom: 30,
+  },
+  button: {
+    paddingVertical: 14,
+    paddingHorizontal: 36,
+    borderRadius: 30,
+  },
+  buttonText: {
+    fontSize: 16,
+    fontWeight: '600',
+  },
 });

@@ -3,7 +3,7 @@ import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-nativ
 import { Picker } from '@react-native-picker/picker';
 import { useColorScheme } from 'react-native';
 import { useUser } from '../../context/UserContext';
-// import { useNavigation } from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native';
 import { lightTheme, darkTheme } from '../../constants/theme';
 import { Image } from 'react-native';
 
