@@ -1,75 +1,126 @@
-// ConsentSummaryScreen.tsx
-import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Alert } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { getAuth } from 'firebase/auth';
-import { saveUserData } from '../../../services/firestorefunctions';
-import { useUser } from '../../../context/UserContext';
+import React, { useState } from "react";
+import { View, Text, StyleSheet, TouchableOpacity, Image, Alert } from "react-native";
+import { Checkbox } from "react-native-paper";
+import * as Animatable from "react-native-animatable";
+import { lightTheme } from "../../../constants/theme";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { getAuth } from "firebase/auth";
+import { saveUserData } from "../../../services/firestorefunctions";
+import { useUser } from "../../../context/UserContext";
 
-export default function ConsentSummaryScreen() {
-  const navigation = useNavigation<any>();
+const rayImage = require("../../../assets/RayConsent.png");
+
+const ConsentScreen = ({ navigation }: any) => {
+  const [consent, setConsent] = useState(false);
+  const theme = lightTheme;
   const { userInfo } = useUser();
 
-  const handleContinue = async () => {
+  const handleConsent = async () => {
     try {
       const auth = getAuth();
       const user = auth.currentUser;
 
-      if (!user) {
-        Alert.alert('User not authenticated');
-        return;
-      }
+      if (!user) throw new Error("User not authenticated");
 
-      await saveUserData(user.uid, userInfo);
-      await AsyncStorage.setItem('@hasOnboarded', 'true');
+      await saveUserData(user.uid, userInfo); // Save to Firestore
+      await AsyncStorage.setItem("@hasOnboarded", "true"); // Mark onboarding complete
 
-      navigation.replace('ReadyToTalk');
+      navigation.replace("ReadyToTalk"); // Proceed
     } catch (err) {
-      console.error('Failed to save user data:', err);
-      Alert.alert('Error', 'Failed to save your information.');
+      console.error("Consent error:", err);
+      Alert.alert("Error", "Something went wrong while saving your data.");
     }
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>You're all set!</Text>
-      <Text style={styles.subtitle}>Tap below to start chatting with Ray.</Text>
-      <TouchableOpacity style={styles.button} onPress={handleContinue}>
-        <Text style={styles.buttonText}>Talk to Ray</Text>
-      </TouchableOpacity>
+    <View style={[styles.container, { backgroundColor: theme.colors.background }]}>
+      <Animatable.Image
+        source={rayImage}
+        style={styles.rayImage}
+        animation="pulse"
+        iterationCount="infinite"
+        easing="ease-in-out"
+        duration={2000}
+      />
+
+      <Text style={[styles.title, { color: theme.colors.textPrimary, fontFamily: theme.font.bold }]}>
+        We need your consent!
+      </Text>
+
+      <Text style={[styles.dataUseText, { color: theme.colors.surface, fontFamily: theme.font.regular }]}>
+        Your data is used only within this app to personalize your experience and will never be shared externally.
+      </Text>
+
+      <View style={styles.checkboxContainer}>
+        <Checkbox
+          status={consent ? "checked" : "unchecked"}
+          onPress={() => setConsent(!consent)}
+          color={theme.colors.primary}
+        />
+        <Text style={[styles.checkboxLabel, { color: theme.colors.textPrimary, fontFamily: theme.font.regular }]}>
+          I consent to the use of my data for personalization.
+        </Text>
+      </View>
+
+      <Animatable.View animation="fadeInUp" duration={600} delay={100}>
+        <TouchableOpacity
+          style={[
+            styles.button,
+            { backgroundColor: consent ? theme.colors.primary : theme.colors.disabled },
+          ]}
+          onPress={handleConsent}
+          disabled={!consent}
+        >
+          <Text style={[styles.buttonText, { fontFamily: theme.font.bold }]}>Continue</Text>
+        </TouchableOpacity>
+      </Animatable.View>
     </View>
   );
-}
+};
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    paddingHorizontal: 20,
-    backgroundColor: '#1C1C2E',
+    padding: 24,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  rayImage: {
+    width: 200,
+    height: 200,
+    marginBottom: 20,
   },
   title: {
     fontSize: 24,
-    fontWeight: 'bold',
-    color: 'white',
-    marginBottom: 10,
+    textAlign: "center",
+    marginBottom: 12,
   },
-  subtitle: {
+  dataUseText: {
+    fontSize: 14,
+    textAlign: "center",
+    marginBottom: 32,
+    fontStyle: "italic",
+    opacity: 0.8,
+  },
+  checkboxContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 40,
+  },
+  checkboxLabel: {
+    marginLeft: 10,
     fontSize: 16,
-    color: '#ccc',
-    marginBottom: 20,
+    flexShrink: 1,
   },
   button: {
-    backgroundColor: '#FF9BB3',
-    paddingVertical: 12,
-    paddingHorizontal: 30,
-    borderRadius: 25,
+    padding: 14,
+    borderRadius: 10,
+    alignItems: "center",
   },
   buttonText: {
-    color: '#fff',
-    fontWeight: '600',
+    color: "#fff",
     fontSize: 16,
   },
 });
+
+export default ConsentScreen;

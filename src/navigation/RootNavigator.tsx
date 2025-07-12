@@ -15,10 +15,11 @@ import SupportiveDetailsScreen from '../screens/onboarding/LungCancer/Supportive
 import ConsentScreen from '../screens/onboarding/LungCancer/ConsentSummaryScreen';
 import ReadyToTalkScreen from '../screens/onboarding/LungCancer/ReadyToTalkScreen';
 
-import AuthTestScreen from '../screens/onboarding/AuthTestScreen';
+import AuthTestScreen from '../screens/AuthTestScreen';
 import LoginScreen from '../screens/LoginScreen';
 import SignupScreen from '../screens/SignupScreen';
 import ChatbotScreen from '../screens/ChatbotScreen';
+import AppHeader from '../screens/AppHeader';
 
 export type RootStackParamList = {
   Welcome: undefined;
@@ -45,7 +46,13 @@ const Stack = createNativeStackNavigator<RootStackParamList>();
 
 const RootNavigator = () => {
   return (
-    <Stack.Navigator initialRouteName="AuthTest" screenOptions={{ headerShown: false }}>
+    <Stack.Navigator
+  initialRouteName="AuthTest"
+  screenOptions={({ route }) => ({
+    header: () =>
+      ['Login', 'Signup'].includes(route.name) ? null : <AppHeader />,
+  })}
+>
       {/* Onboarding screens */}
       <Stack.Screen name="Welcome" component={WelcomeScreen} />
       <Stack.Screen name="RoleSelection" component={RoleSelectionScreen} />

@@ -5,7 +5,7 @@ import { getAuth } from 'firebase/auth';
 export const saveUserData = async (userId: string, data: any) => {
     try {
         const userRef = doc(db, 'users', userId);
-        await setDoc(userRef, data);
+        await setDoc(userRef, data, { merge: true });
         console.log('User data saved successfully!');
     } catch (error: unknown) {
         if (error instanceof Error) {
