@@ -9,6 +9,7 @@ import { lightTheme, darkTheme } from '../constants/theme';
 import { sendMessageToGemini } from '../services/geminiChat';
 import { useUser } from '../context/UserContext';
 import { getPatientData } from '../services/firestorefunctions';
+import Markdown from 'react-native-markdown-display';
 
 export default function ChatbotScreen() {
   const [messages, setMessages] = useState<{ from: 'user' | 'bot'; text: string }[]>([]);
@@ -17,13 +18,11 @@ export default function ChatbotScreen() {
   const theme = scheme === 'dark' ? darkTheme : lightTheme;
   const { userInfo, setUserInfo } = useUser();
 
-  // 1) Load patient data from Firestore *once*
   useEffect(() => {
     (async () => {
       try {
         const data = await getPatientData();
         setUserInfo(data);
-        // send the intro
         const intro = `
 User: Here is my info:
 • Name: ${data.firstName ?? 'undefined'}
@@ -42,8 +41,6 @@ Let's chat!`;
       }
     })();
   }, []);
-
-
 // useEffect(() => {
 //   (async () => {
 //     try {
@@ -83,7 +80,6 @@ Let's chat!`;
 // }, []);
 
 
-  // 2) Handle new user message
   const handleSend = async () => {
     if (!input.trim()) return;
     const userMsg = { from: 'user' as const, text: input.trim() };
@@ -91,7 +87,6 @@ Let's chat!`;
     setMessages(updated);
     setInput('');
 
-    // Build a single prompt string of the entire convo
     const convo = updated
       .map(m => `${m.from === 'user' ? 'User' : 'Ray'}: ${m.text}`)
       .join('\n') + '\nRay:';
@@ -118,7 +113,13 @@ Let's chat!`;
               },
             ]}
           >
-            <Text style={{ color: '#000' }}>{item.text}</Text>
+            {item.from === 'bot' ? (
+              <Markdown style={{ body: { color: '#000', fontSize: 16 } }}>
+                {item.text}
+              </Markdown>
+            ) : (
+              <Text style={{ color: '#000' }}>{item.text}</Text>
+            )}
           </View>
         )}
         contentContainerStyle={{ padding: 12 }}
