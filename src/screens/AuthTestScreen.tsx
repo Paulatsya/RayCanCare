@@ -16,7 +16,7 @@ export default function AuthTestScreen() {
           const hasOnboarded = await AsyncStorage.getItem('@hasOnboarded');
           console.log('Has onboarded:', hasOnboarded);
           if (hasOnboarded === 'true') {
-            navigation.replace('Chatbot'); // ✅ Skip onboarding
+            navigation.replace('ReadyToTalk'); // ✅ Skip onboarding
           } else {
             navigation.replace('Welcome'); // 🔁 Start onboarding
           }

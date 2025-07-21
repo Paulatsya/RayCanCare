@@ -52,9 +52,9 @@ export default function WelcomeScreen() {
         {!isLoggedIn && (
           <TouchableOpacity
             style={[styles.button, { backgroundColor: theme.colors.secondary, marginTop: 16 }]}
-            onPress={() => navigation.navigate('Chatbot')}
+            onPress={() => navigation.navigate('ReadyToTalk')}
           >
-            <Text style={[styles.buttonText, { color: theme.colors.textPrimary }]}>Chat with Ray</Text>
+            <Text style={[styles.buttonText, { color: theme.colors.textPrimary }]}>Ready to talk?</Text>
           </TouchableOpacity>
         )}
       </Animatable.View>

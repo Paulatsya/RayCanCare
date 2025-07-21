@@ -37,7 +37,7 @@ export default function AppHeader() {
       </Text>
 
       <TouchableOpacity onPress={handleLogout}>
-        <Text style={[styles.button, { color: theme.colors.error }]}>🚪 Logout</Text>
+        <Text style={[styles.button, { color: theme.colors.error }]}>Logout</Text>
       </TouchableOpacity>
     </View>
   );

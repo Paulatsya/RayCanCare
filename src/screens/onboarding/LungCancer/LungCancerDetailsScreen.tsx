@@ -76,7 +76,7 @@ const LungCancerDetailsScreen: React.FC = ({ navigation }: any) => {
                     animation="fadeIn"
                     duration={600}
                     delay={500}
-                    style={[styles.subtitle, { color: colors.surface, fontFamily: font.regular }]}
+                    style={[styles.subtitle, { color: colors.textPrimary, fontFamily: font.regular }]}
                 >
                     Let’s understand your diagnosis better!
                 </Animatable.Text>

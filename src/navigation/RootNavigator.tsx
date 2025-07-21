@@ -20,6 +20,7 @@ import LoginScreen from '../screens/LoginScreen';
 import SignupScreen from '../screens/SignupScreen';
 import ChatbotScreen from '../screens/ChatbotScreen';
 import AppHeader from '../screens/AppHeader';
+import PredictionResultScreen from '../screens/onboarding/LungCancer/PredictionResultScreen';
 
 export type RootStackParamList = {
   Welcome: undefined;
@@ -40,6 +41,7 @@ export type RootStackParamList = {
   Login: undefined;
   Signup: undefined;
   Chatbot: undefined;
+  PredictionResult: undefined;
 };
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -68,12 +70,14 @@ const RootNavigator = () => {
       <Stack.Screen name="SupportiveDetails" component={SupportiveDetailsScreen} />
       <Stack.Screen name="ConsentSummary" component={ConsentScreen} />
       <Stack.Screen name="ReadyToTalk" component={ReadyToTalkScreen} />
+      <Stack.Screen name="PredictionResult" component={PredictionResultScreen} />
 
       {/* Auth / Login / Signup */}
       <Stack.Screen name="AuthTest" component={AuthTestScreen} />
       <Stack.Screen name="Login" component={LoginScreen} />
       <Stack.Screen name="Signup" component={SignupScreen} />
       <Stack.Screen name="Chatbot" component={ChatbotScreen} />
+      
     </Stack.Navigator>
   );
 };
