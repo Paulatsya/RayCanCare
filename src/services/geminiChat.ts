@@ -1,6 +1,5 @@
 import axios from 'axios';
-
-const GEMINI_API_KEY = 'AIzaSyA7KDuviFhzc2-J4X7OwQtLI_igYMIeRAc';
+import { GEMINI_API_KEY } from '@env';
 
 export async function sendMessageToGemini(prompt: string): Promise<string> {
   try {
@@ -10,7 +9,6 @@ export async function sendMessageToGemini(prompt: string): Promise<string> {
         contents: [{ parts: [{ text: prompt }] }],
         generationConfig: {
           temperature: 0.7,
-          //maxOutputTokens: 500,
         },
       },
       {
@@ -18,7 +16,6 @@ export async function sendMessageToGemini(prompt: string): Promise<string> {
       }
     );
 
-    console.log('Gemini response:', response.data);
     return (
       response.data?.candidates?.[0]?.content?.parts?.[0]?.text ?? 'No response'
     );
@@ -32,4 +29,3 @@ export async function sendMessageToGemini(prompt: string): Promise<string> {
     return 'No response';
   }
 }
-
